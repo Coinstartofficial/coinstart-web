@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <script src="jquery.min.js"></script>
+    <style>
+      .primary-btn {
+        border: none;
+        padding: 15px 60px;
+        background: linear-gradient(90deg, #a679e0 0%, #7d50b8 100%);
+        border-radius: 8px;
+        color: #fff;
+        font-size: 24px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div style="width: 800px; margin: 100px auto 0 auto">
+      <button onclick="testhandle()" class="primary-btn">click me for test</button>
+      <button onclick="connecthandle()" class="primary-btn">connect to wallet</button>
+
+      <div style="font-size: 24px; margin-top: 50px">连接状态：<span id="conenct-status"></span></div>
+    </div>
+    <script>
+      var connect_status = 'nothing';
+
+      setTimeout(function () {
+        checkconnect();
+      }, 2000);
+
+      function testhandle() {
+        console.log('clicked');
+        coinstartsdk.request('test', 'hello', function (res) {
+          alert(JSON.stringify(res));
+        });
+      }
+      function connecthandle() {
+        console.log('clicked connect');
+        if (connect_status == 'pending') return;
+        coinstartsdk.connect(function (res) {
+          checkconnect();
+        });
+      }
+      function checkconnect() {
+        coinstartsdk.checkconnect(function (res) {
+          console.log('checkconnect res:', res);
+          if (res.data == 'pending') {
+            $('#conenct-status').text('等待钱包操作');
+            setTimeout(checkconnect, 300);
+            connect_status = 'pending';
+            return;
+          }
+          if (res.data == 'ok') {
+            $('#conenct-status').text('钱包已同意，连接成功');
+            connect_status = 'nothing';
+            return;
+          }
+          if (res.data == 'cancel') {
+            $('#conenct-status').text('钱包拒绝，连接失败');
+            connect_status = 'nothing';
+            return;
+          }
+          $('#conenct-status').text('未连接');
+        });
+      }
+    </script>
+  </body>
+</html>
