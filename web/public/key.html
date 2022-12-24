@@ -8,15 +8,37 @@
     <script>
       function openex() {
         try {
-          coinstart_request('open', { top: 100, left: 100 }, function (res) {
-            console.log(res);
+          var key = getParameterByName('key');
+          if (!key) {
+            alert('key not found');
+            return;
+          }
+          coinstartsdk.setkey(key, function (kres) {
+            if (!kres.success) {
+              alert('set key res:', kres);
+              return;
+            }
+            console.log('setkey ok');
+            coinstartsdk.request('open', { top: 100, left: 100 }, function (res) {
+              console.log('open res:', res);
+              window.close();
+            });
           });
-          window.close();
         } catch (e) {
-          setTimeout(openex, 1000);
+          console.log('catch:', e);
+          setTimeout(openex, 500);
         }
       }
       openex();
+
+      function getParameterByName(name, url = window.location.href) {
+        name = name.replace(/[\[\]]/g, '\\$&');
+        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+          results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, ' '));
+      }
     </script>
   </body>
 </html>
