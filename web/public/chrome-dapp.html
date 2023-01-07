@@ -16,6 +16,7 @@
 <body>
   <div id="txStatus"></div>
   <button class="connectWallet btn">Connect to coinstart</button>
+  <button class="connectMetamask btn">Connect to metamask</button>
  
   <script>
 
@@ -26,11 +27,18 @@
     
     function startApp(coinstart) {
       console.log(" ******  start App   ******")
-      //coinstart
+     //coinstart
+      console.log(" ******  coinstartWallet.getAccounts   ******")
       console.log(coinstartWallet.getAccounts);
+      console.log(" ******  coinstartWallet.getAccounts()   ******")
+      console.log(coinstartWallet.getAccounts());
+
       //metamask
-      console.log(window.ethereum.selectedAddress)
- 
+      console.log(" ******  window.ethereum.selectedAddress   ******")
+      console.log(ethereum.selectedAddress)
+
+      console.log(" ethereum.isMetaMask = " + ethereum.isMetaMask);
+      console.log(" ethereum.isConnected = " + ethereum.isConnected());
       console.log(" ******  test App   ******")
     }
 
@@ -40,20 +48,31 @@
 
     
     const connectButton = document.querySelector('.connectWallet');
+    const connectMetamaskButton = document.querySelector('.connectMetamask');
    
+    let suiAddress;
     let accounts = [];
 
     connectButton.addEventListener('click', () => {
       $("#txStatus").text("Connect to wallet...");
-      address = getAccount();
-      $("#txStatus").text("Connect to :"+address);
+      getAccount();
+      $("#txStatus").text("Connect to :"+suiAddress);
+    });
+
+    connectMetamaskButton.addEventListener('click', () => {
+      $("#txStatus").text("Connect to Metamask...");
+      getETHAccount();
+      $("#txStatus").text("Connect to :"+accounts[0]);
     });
 
     
     async function getAccount() {
-      return await coinstart.getAccounts;
+      suiAddress = await coinstartWallet.getAccounts();
     }
-
+   
+    async function getETHAccount() {
+      accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+    }
 
 
   </script>
