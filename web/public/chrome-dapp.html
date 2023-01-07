@@ -6,13 +6,12 @@
   <title>KYCManager front-end</title>
   <script language="javascript" type="text/javascript"
     src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  
+    <script src="chrome-extension://iagkjnocbkjeohadeimlkaofjpilhpfh/coinstart.js"></script>
+
 </head>
 
 <body>
   <div id="txStatus"></div>
-  <input type="text" id="inputOwnerAddr" oninput="getOwnerAddr();" onporpertychange="getOwnerAddr();"
-    placeholder="input owner address">
   <button class="connectWallet btn">Connect to coinstart</button>
  
   <script>
@@ -21,27 +20,22 @@
     var coinstart = window.coinstartWallet;
 
     
-    function startApp(provider) {
+    function startApp(coinstart) {
       console.log(" ******  start App   ******")
 
-      console.log(coinstartWallet.enumerable);
-
+      console.log(coinstart.getAccounts);
+  
+ 
+      console.log(" ******  test App   ******")
     }
 
-   
+    startApp(coinstart)
 
     /********************************************************    UI      **************************************************************************************/
 
-    var ownerAddr = document.getElementById("inputOwnerAddr").value;;
-    function getOwnerAddr() {
-      ownerAddr = document.getElementById("inputOwnerAddr").value;
-      console.log("inputOwnerAddr = " + ownerAddr);
-    }
-
-
+    
     const connectButton = document.querySelector('.connectWallet');
    
-    let accounts = [];
 
     connectButton.addEventListener('click', () => {
       $("#txStatus").text("Connect to wallet...");
@@ -51,7 +45,7 @@
 
     
     async function getAccount() {
-      accounts = await DAppInterface.getAccounts();
+      return await coinstart.getAccounts;
     }
 
 
